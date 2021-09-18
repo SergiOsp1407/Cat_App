@@ -2,16 +2,16 @@ package com.sj.main;
 
 public class Cats {
 
-    int id;
+    String id;
     String url;
     String api_key="2bfe60a3-8f9d-4072-86e9-5e91e21b333d";
     String image;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
