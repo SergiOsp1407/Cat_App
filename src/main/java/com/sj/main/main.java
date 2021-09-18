@@ -1,9 +1,10 @@
 package com.sj.main;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class main {
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
         int optionMenu = -1;
         String[] buttons = {
