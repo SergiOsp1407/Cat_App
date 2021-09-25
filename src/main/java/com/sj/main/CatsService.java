@@ -1,9 +1,7 @@
 package com.sj.main;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.squareup.okhttp.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -54,7 +52,7 @@ public class CatsService {
             if(backgroundCat.getIconWidth() > 800){
                 //Resizing
                 Image background = backgroundCat.getImage();
-                Image resizedImage = background.getScaledInstance(800,600, Image.SCALE_SMOOTH);
+                Image resizedImage = background.getScaledInstance(200,200, Image.SCALE_SMOOTH);
                 backgroundCat = new ImageIcon(resizedImage);
             }
 
@@ -97,6 +95,61 @@ public class CatsService {
     }
     
     public static void setFavoriteCat(Cats cat){
+
+        try{
+
+            OkHttpClient client = new OkHttpClient();
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, "{\r\n    \"image_id\": \""+cat.getId()+"\"\r\n}");
+            Request request = new Request.Builder()
+                    .url("https://api.thecatapi.com/v1/favourites")
+                    .method("POST", body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("x-api-key", cat.getApi_key())
+                    .build();
+            Response response = client.newCall(request).execute();
+
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+        };
+
+
+
+
+
+    }
+
+    public static void seeFavouritesCats(String apikey) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.thecatapi.com/v1/favourites")
+                .method("GET", null)
+                .addHeader("x-api-key", apikey)
+                .build();
+        Response response = client.newCall(request).execute();
+
+        String responseJson = response.body().string();
+
+        Gson gson = new Gson();
+
+        FavCats[] catsArray = gson.fromJson(responseJson,FavCats[].class);
+
+        if( catsArray.length > 0){
+
+            int min = 1;
+            int max = catsArray.length;
+            int aleatory = (int) (Math.random() * ((max-min)-1) + min);
+            int index = aleatory - 1;
+
+            FavCats favcat = catsArray[index];
+
+
+
+
+
+        }
 
 
 

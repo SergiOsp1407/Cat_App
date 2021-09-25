@@ -9,7 +9,8 @@ public class main {
         int optionMenu = -1;
         String[] buttons = {
                 "1. See some cats",
-                "2. Exit"
+                "2. See favourites",
+                "3. Exit"
         };
 
         do{
@@ -28,6 +29,12 @@ public class main {
             switch (optionMenu){
                 case 0:
                     CatsService.seeCats();
+                    break;
+                case 1:
+                    Cats cat = new Cats();
+                    CatsService.seeFavouritesCats(cat.getApi_key());
+                    break;
+                case 2:
                     break;
                 default:
                     break;
