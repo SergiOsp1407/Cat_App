@@ -140,12 +140,68 @@ public class CatsService {
 
             int min = 1;
             int max = catsArray.length;
-            int aleatory = (int) (Math.random() * ((max-min)-1) + min);
+            int aleatory = (int) (Math.random() * ((max-min)+1) + min);
             int index = aleatory - 1;
 
             FavCats favcat = catsArray[index];
 
+            //Resizing the image that we get
+            Image image = null;
 
+            try{
+
+                //URL definitions lets download the pic from the API
+                URL url = new URL(favcat.image.getUrl());
+
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.addRequestProperty("User-Agent", "");
+                BufferedImage bufferedImage = ImageIO.read(http.getInputStream());
+
+                ImageIcon backgroundCat = new ImageIcon(bufferedImage);
+
+
+                if(backgroundCat.getIconWidth() > 800){
+                    //Resizing
+                    Image background = backgroundCat.getImage();
+                    Image resizedImage = background.getScaledInstance(200,200, Image.SCALE_SMOOTH);
+                    backgroundCat = new ImageIcon(resizedImage);
+                }
+
+                String menu = "Opciones: \n"
+                        + "1. See other cat \n"
+                        + "2. Delete favorites \n"
+                        + "3. Return \n";
+
+                String[] buttons = {"See other cat", "Delete favorites", "Return"};
+                String catId = favcat.getId();
+                String option = (String) JOptionPane.showInputDialog(null, menu, catId,
+                        JOptionPane.INFORMATION_MESSAGE,backgroundCat,buttons,buttons[0]);
+
+                int selectedOption = -1;
+
+                for(int i = 0; i < buttons.length; i++){
+                    if(option.equals(buttons[i])){
+                        selectedOption = i;
+                    }
+                }
+
+                switch (selectedOption){
+                    case 0:
+                        seeFavouritesCats(apikey);
+                        break;
+                    case 1:
+                        deleteFavorite(favcat);
+                        break;
+                    default:
+
+                        break;
+
+                }
+
+            }catch(IOException e){
+
+                System.out.println(e.getMessage());
+            }
 
 
 
@@ -153,6 +209,26 @@ public class CatsService {
 
 
 
+    }
+
+    public static void deleteFavorite(FavCats favoriteCat){
+
+        try {
+
+            OkHttpClient client = new OkHttpClient();
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, "");
+            Request request = new Request.Builder()
+                    .url("https://api.thecatapi.com/v1/favourites/"+favoriteCat.getId()+"")
+                    .method("DELETE", body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("x-api-key", favoriteCat.getApi_key())
+                    .build();
+            Response response = client.newCall(request).execute();
+
+        }catch(IOException e){
+            System.out.println(e);
+        }
     }
 
 }
